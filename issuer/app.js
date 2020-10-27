@@ -30,18 +30,8 @@ var crypto = new CryptoBuilder()
     .useSigningKeyReference(signingKeyReference)
     .useRecoveryKeyReference(recoveryKeyReference)
     .useKeyVault(kvCredentials, config.kvVaultUri)
+    .useDid(config.did)
     .build();
-
-// BUGBUG: This website currently does not use the same issuer DID that was 
-// generated in Azure Portal as part of issuer setup. 
-// Instead, a new set of Azure Key Vault keys along with a new DID are generated 
-// on each run of this web app.
-(async () => {
-  crypto = await crypto.generateKey(KeyUse.Signature, 'signing');
-  crypto = await crypto.generateKey(KeyUse.Signature, 'recovery');
-  const did = await new LongFormDid(crypto).serialize();
-  crypto.builder.useDid(did);
-})();
 
 /////////// Set the expected values for the Verifiable Credential
 const credential = 'https://portableidentitycards.azure-api.net/v1.0/9c59be8b-bd18-45d9-b9d9-082bc07c094f/portableIdentities/contracts/Ninja%20Card';
